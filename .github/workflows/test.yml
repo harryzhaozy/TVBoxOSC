@@ -24,9 +24,9 @@ jobs:
          # - userName: q215613905
           #  repoName: TVBoxOS
           #  branchName: main
-          - userName: harryzhaozy
-            repoName: TVBoxOSC
-            branchName: master
+          - userName: takagen99
+            repoName: Box
+            branchName: main
             java_ver: 17
     steps:
       - name: Checkout
