@@ -32,15 +32,15 @@ jobs:
           - userName: FongMi
             repoName: TV
             branchName: release
-            jdkVersion: 17
-          - userName: mlabalabala
-            repoName: box
-            branchName: main
-            jdkVersion: 11
-          - userName: Klosw
-            repoName: Box
-            branchName: dev-4.4
-            jdkVersion: 11
+         #   jdkVersion: 17
+         # - userName: mlabalabala
+         #   repoName: box
+         #   branchName: main
+         #   jdkVersion: 11
+         # - userName: Klosw
+         #   repoName: Box
+         #  branchName: dev-4.4
+         #   jdkVersion: 11
 
     steps:
       - name: Checkout
