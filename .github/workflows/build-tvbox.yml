@@ -216,7 +216,8 @@ jobs:
           git pull --rebase origin master || true # Ignore pull failures if no remote tracking branch
 
           # Update README (more robust sed command)
-          sed -i "s/\(${matrix.userName}\/${matrix.repoName}\/${matrix.branchName}\/Updated: \)[a-zA-Z0-9]*/\1${{ env.commit }}/" README.md
+          #sed -i "s/\(${matrix.userName}\/${matrix.repoName}\/${matrix.branchName}\/Updated: \)[a-zA-Z0-9]*/\1${{ env.commit }}/" README.md
+          sed -i "/${{ matrix.userName }}\/${{ matrix.repoName }}\/${{ matrix.branchName }}/s#Updated: [a-zA-Z0-9]*#Updated: ${{ env.commit }}#" README.md
           sed -i "s/update at .*/update at $(date '+%Y-%m-%d %H:%M:%S')/" README.md
 
           # Add and commit changes
