@@ -184,20 +184,47 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push to master
+      #- name: Push to master
+      #  if: ${{ env.commit }}
+      #  run: |
+      #    rm -rf TVBoxOSC
+      #    sed -i '/url =/d' ./.git/config
+      #    git config --local user.name "github-actions[bot]"
+      #    git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      #    git remote set-url --add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+      #    git pull --rebase
+      #    sed -i "/${{ matrix.userName }}\/${{ matrix.repoName }}\/${{ matrix.branchName }}/s#Updated: [a-zA-Z0-9]*#Updated: ${{ env.commit }}#" README.md
+      #    sed -i "s/update at .*/update at $(date '+%Y-%m-%d %H:%M:%S')/" README.md
+      #    git add --all
+      #    git commit -m "${{ env.commit }}"
+      #    git push -u -f origin master
+      - name: Update README and Push to Master
         if: ${{ env.commit }}
         run: |
           rm -rf TVBoxOSC
-          sed -i '/url =/d' ./.git/config
+          # Checkout the correct branch for updating README
+          git checkout master
+
+          # Configure Git user
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote set-url --add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git pull --rebase
-          sed -i "/${{ matrix.userName }}\/${{ matrix.repoName }}\/${{ matrix.branchName }}/s#Updated: [a-zA-Z0-9]*#Updated: ${{ env.commit }}#" README.md
+
+          # Set remote URL (no need to remove and re-add)
+          git remote set-url origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+
+          # Pull with rebase (handle potential conflicts)
+          git pull --rebase origin master || true # Ignore pull failures if no remote tracking branch
+
+          # Update README (more robust sed command)
+          sed -i "s/\(${matrix.userName}\/${matrix.repoName}\/${matrix.branchName}\/Updated: \)[a-zA-Z0-9]*/\1${{ env.commit }}/" README.md
           sed -i "s/update at .*/update at $(date '+%Y-%m-%d %H:%M:%S')/" README.md
-          git add --all
-          git commit -m "${{ env.commit }}"
-          git push -u -f origin master
+
+          # Add and commit changes
+          git add README.md  # Only add the changed file
+          git commit -m "Update README with ${{ env.commit }}"
+
+          # Force push (use with caution, only if necessary)
+          git push origin master -f
 
   clean:
     needs: build
